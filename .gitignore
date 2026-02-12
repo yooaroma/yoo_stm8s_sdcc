@@ -1,0 +1,9 @@
+# .gitignore 파일 권장 내용
+obj/
+Debug/
+Release/
+*.hex
+*.bin
+*.lk
+*.lst
+*.map
