@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>STM8 마이컴 개발 환경 구축 가이드</title>
+    <style>
+        /* 기본 스타일 */
+        body {
+            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+            line-height: 1.7;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #f8f9fa;
+        }
+
+        /* 헤더 스타일 */
+        header {
+            background: linear-gradient(135deg, #2c3e50, #00d2ff);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        header h1 { margin: 0; font-size: 2.5em; }
+        header p { opacity: 0.9; margin-top: 10px; }
+
+        /* 섹션 공통 */
+        h2 { border-left: 6px solid #00d2ff; padding-left: 15px; color: #2c3e50; margin-top: 50px; }
+        h3 { color: #34495e; border-bottom: 1px solid #ddd; padding-bottom: 8px; margin-top: 30px; }
+        
+        .card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            border: 1px solid #e1e4e8;
+        }
+
+        /* 설치 도구 리스트 */
+        .tool-list { list-style: none; padding: 0; }
+        .tool-list li { margin-bottom: 15px; padding: 10px; border-bottom: 1px dashed #eee; }
+        .tool-list strong { color: #0077b6; }
+        .btn-download {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #00b4d8;
+            color: white !important;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+        .btn-download:hover { background: #0077b6; }
+
+        /* 코드 블록 */
+        pre {
+            background: #2d3436;
+            color: #f1f2f6;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9em;
+        }
+
+        /* 이미지 그리드 */
+        .img-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .img-card { text-align: center; }
+        .img-card img { width: 100%; border-radius: 8px; border: 1px solid #ddd; transition: 0.3s; }
+        .img-card img:hover { transform: scale(1.03); }
+        .img-card p { font-size: 0.9em; font-weight: bold; margin-top: 10px; }
+
+        /* 단축키 테이블 */
+        .shortcut-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .shortcut-item { background: #f1f2f6; padding: 10px; border-radius: 6px; font-size: 0.9em; }
+        .key { background: #fff; border: 1px solid #ccc; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: #e91e63; }
+
+        /* 뱃지 스타일 */
+        .badge {
+            display: inline-block;
+            background: #e1f5fe;
+            color: #01579b;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>ST Microcontroller Development Guide</h1>
+    <p>VS Code + SDCC + Make를 활용한 STM8S 시리즈 개발 환경</p>
+</header>
+
+<h2>1. 필수 설치 도구 (Tools)</h2>
+<div class="card">
+    <ul class="tool-list">
+        <li><strong>Editor:</strong> VS Code <a href="https://code.visualstudio.com/download" class="btn-download" target="_blank">Download</a></li>
+        <li><strong>Compiler (ST):</strong> SDCC (Snapshot 빌드 권장) <a href="https://sourceforge.net/projects/sdcc/files/snapshot_builds/x86_64-w64-mingw32/" class="btn-download" target="_blank">Download</a>
+            <p style="font-size: 0.85em; color: #666; margin-top:5px;">※ <code>C:\tools\sdcc\bin</code> 환경변수 Path 추가 필수</p>
+        </li>
+        <li><strong>Build Tool:</strong> Make (Windows Build Tools) <a href="https://github.com/xpack-dev-tools/windows-build-tools-xpack/releases" class="btn-download" target="_blank">Download</a>
+            <p style="font-size: 0.85em; color: #666; margin-top:5px;">※ <code>C:\tools\make\bin</code> 환경변수 Path 추가 필수</p>
+        </li>
+        <li><strong>Compiler (GCC):</strong> MinGW-w64 <a href="https://github.com/niXman/mingw-builds-binaries/releases" class="btn-download" target="_blank">Download</a></li>
+        <li><strong>Programmer:</strong> ST Visual Programmer (STVP) <a href="https://www.st.com/en/development-tools/stvp-stm8.html" class="btn-download" target="_blank">Download</a></li>
+        <li><strong>Flasher:</strong> stm8flash <a href="https://yooaroma.com/tools/stm8flash.zip" class="btn-download" target="_blank">Direct Download</a></li>
+        <li><strong>VS Code Extension:</strong> Serial Monitor, STM8-debug</li>
+    </ul>
+</div>
+
+<h2>2. 레퍼런스 및 소스코드</h2>
+<div class="card">
+    <h3>📌 공식 소스코드 저장소</h3>
+    <a href="https://github.com/yooaroma/yoo_stm8s" target="_blank" style="font-weight: bold; color: #0077b6;">https://github.com/yooaroma/yoo_stm8s</a>
+
+    <h3>📚 데이터시트 및 매뉴얼</h3>
+    <div class="img-grid">
+        <div class="img-card">
+            <a href="https://yooaroma.com/mzip/stm8s_chip.pdf" target="_blank">
+                <img src="https://yooaroma.com/mzip/stm8s_chip.png" alt="Chip Manual">
+                <p>STM8S103F3 Chip Manual</p>
+            </a>
+        </div>
+        <div class="img-card">
+            <a href="https://yooaroma.com/mzip/stm8s_pgm.pdf" target="_blank">
+                <img src="https://yooaroma.com/mzip/stm8s_pgm.png" alt="Programming Manual">
+                <p>Programming Manual (PM0044)</p>
+            </a>
+        </div>
+        <div class="img-card">
+            <a href="https://yooaroma.com/mzip/stm8s_ref.pdf" target="_blank">
+                <img src="https://yooaroma.com/mzip/stm8s_ref.png" alt="Reference Manual">
+                <p>Reference Manual</p>
+            </a>
+        </div>
+        <div class="img-card">
+            <a href="https://yooaroma.com/mzip/stm8s_yoo.pdf" target="_blank">
+                <img src="https://yooaroma.com/mzip/stm8s_yoo.png" alt="C Example">
+                <p>STM8S C example</p>
+            </a>
+        </div>
+        <div class="img-card">
+            <a href="https://www.st.com/resource/en/datasheet/stm8s103f3.pdf" target="_blank">
+                <img src="https://yooaroma.com/mzip/stm8s_chip.png" alt="ENG Chip Manual">
+                <p>ENG STM8S103F3 Chip Manual</p>
+            </a>
+        </div>
+        <div class="img-card">
+            <a href="https://www.st.com/resource/en/programming_manual/pm0044-stm8-cpu-programming-manual-stmicroelectronics.pdf" target="_blank">
+                <img src="https://yooaroma.com/mzip/stm8s_pgm.png" alt="ENG Programming Manual">
+                <p>ENG Programming Manual (PM0044)</p>
+            </a>
+        </div>
+        <div class="img-card">
+            <a href="https://www.st.com/resource/en/reference_manual/rm0016-stm8s-series-and-stm8af-series-8bit-microcontrollers-stmicroelectronics.pdf" target="_blank">
+                <img src="https://yooaroma.com/mzip/stm8s_ref.png" alt="ENG Reference Manual">
+                <p>ENG Reference Manual</p>
+            </a>
+        </div>
+    </div>
+</div>
+
+<h2>3. 하드웨어 주요 사양 (STM8S103F3P6)</h2>
+<div class="card">    
+    <a href="https://yooaroma.com/mm/image/stm8/stm8blue/STM8S103F3P6_BOARD.png" target="_blank"> Board Front
+        <img src="https://yooaroma.com/mm/image/stm8/stm8blue/STM8S103F3P6_BOARD.png" alt="Board Front" style="width:100%; height:auto;">
+    </a>
+    <a href="https://yooaroma.com/mm/image/stm8/stm8blue/STM8S-Blue-Generic-STM8S103F3P6-Microcontroller-Board-Pinout-Diagram-R0.1-CIRCUITSTATE-Electronics-1.png" target="_blank"> Pinout
+        <img src="https://yooaroma.com/mm/image/stm8/stm8blue/STM8S-Blue-Generic-STM8S103F3P6-Microcontroller-Board-Pinout-Diagram-R0.1-CIRCUITSTATE-Electronics-1.png" alt="Pinout" style="width:100%; height:auto;">
+    </a>
+    <a href="https://yooaroma.com/mzip/01_stm8s103_void_sch.png" target="_blank"> 회로도
+        <img src="https://yooaroma.com/mzip/01_stm8s103_void_sch.png" alt="회로도" style="width:100%; height:auto;">
+    </a>
+</div>
+
+<h2>4. 하드웨어 핀 맵 (Pin Mapping)</h2>
+
+<div class="grid">
+    <div class="card">
+        <h3 style="text-align: center; color: var(--primary);">⬅️ LEFT Header</h3>
+        <ul class="pin-list">
+            <li><span class="badge badge-pd">PD4</span> D13</li>
+            <li><span class="badge badge-pd">PD5</span> D14 / A3 / <strong>UART_TXD</strong></li>
+            <li><span class="badge badge-pd">PD6</span> D15 / A4 / <strong>UART_RXD</strong></li>
+            <li><span class="badge badge-pwr">RST</span> NRST (Reset)</li>
+            <li><span class="badge badge-pa">PA1</span> D0 / KEY1</li>
+            <li><span class="badge badge-pa">PA2</span> D1 / LED1</li>
+            <li><span class="badge" style="background:#eee;">GND</span> Ground</li>
+            <li><span class="badge badge-pwr">5V</span> Power In</li>
+            <li><span class="badge badge-pwr">3.3V</span> Power Out</li>
+            <li><span class="badge badge-pa">PA3</span> D2 / SPI_NSS</li>
+        </ul>
+    </div>
+    <div class="card">
+        <h3 style="text-align: center; color: var(--primary);">RIGHT Header ➡️</h3>
+        <ul class="pin-list">
+            <li><span class="badge badge-pd">PD3</span> D23 / A2 / <strong>KEY</strong></li>
+            <li><span class="badge badge-pd">PD2</span> D11 / A1</li>
+            <li><span class="badge badge-pd">PD1</span> D10 / <strong>SWIM</strong></li>
+            <li><span class="badge badge-pc">PC7</span> D9 / SPI_MISO</li>
+            <li><span class="badge badge-pc">PC6</span> D8 / SPI_MOSI</li>
+            <li><span class="badge badge-pc">PC5</span> D7 / SPI_SCK</li>
+            <li><span class="badge badge-pc">PC4</span> D6 / A0</li>
+            <li><span class="badge badge-pc">PC3</span> D5</li>
+            <li><span class="badge badge-pb">PB4</span> D4 / <strong>I2C_SCL</strong></li>
+            <li><span class="badge badge-pb">PB5</span> <strong>LED</strong> / <strong>I2C_SDA</strong></li>
+        </ul>
+    </div>
+</div>
+
+<h2>5. 실행 순서 (Workflow)</h2>
+<div class="card">
+    <h3>🛠 빌드 및 업로드</h3>
+    <ol>
+        <li>터미널에서 프로젝트 디렉토리로 이동</li>
+        <li>명령어 입력: <pre>make</pre> (컴파일 수행 및 <code>bin/xx.hex</code> 생성)</li>
+        <li>업로드: <pre>make flash</pre> (stm8flash 도구 사용 시)</li>
+    </ol>
+
+    <h3>🌿 Git 작업 순서</h3>
+<pre>
+git add .
+git commit -m "작업 내용 기록"
+git push
+</pre>
+</div>
+
+<h2>6. VS Code 생산성 단축키</h2>
+<div class="card">
+    <div class="shortcut-grid">
+        <div class="shortcut-item">멀티 커서 생성: <span class="key">Alt + Click</span></div>
+        <div class="shortcut-item">같은 단어 동시 선택: <span class="key">Ctrl + D</span></div>
+        <div class="shortcut-item">라인 위/아래 이동: <span class="key">Alt + Up/Down</span></div>
+        <div class="shortcut-item">라인 위/아래 복사: <span class="key">Alt + Shift + Up/Down</span></div>
+        <div class="shortcut-item">주석 처리 (토글): <span class="key">Ctrl + /</span></div>
+        <div class="shortcut-item">사이드바 토글: <span class="key">Ctrl + B</span></div>
+        <div class="shortcut-item">통합 터미널 열기: <span class="key">Ctrl + ~</span></div>
+        <div class="shortcut-item">커맨드 팔레트: <span class="key">F1</span> 또는 <span class="key">Ctrl + Shift + P</span></div>
+    </div>
+</div>
+
+<footer style="text-align: center; margin-top: 50px; color: #95a5a6; font-size: 0.9em;">
+    <p>© 2024 STM8 Development Guide | Reference: yooaroma.com</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+[STM8 소개 및 개발환경 구축] <https://www.youtube.com/watch?v=ATxIS1u6tZw&list=PL4VbhYMWZ6cZPHTfP5wYPx2SgV94A00AW> <br>
+
+
+조회수 2,557회  2022. 3. 22.
+디바이스마트 홈페이지
+https://www.devicemart.co.kr
+
+[STMicroelectronics] ST-LINK/V2
+https://www.devicemart.co.kr/goods/vi...
+
+[SMG] Micro USB STM8S103F3P6 초소형 개발보드 [SZH-AT041]
+https://www.devicemart.co.kr/goods/vi...
+
+stm8-sdcc-template
+https://github.com/neosarchizo/stm8-s...
+
+sdcc
+http://sdcc.sourceforge.net/
+
+stm8flash
+https://github.com/vdudouyt/stm8flash
+
+https://www.google.com/search?q=mingw-w64-x86+with+libusb1.0&oq=mingw-w64-x86+with+libusb1.0&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIKCAEQABiiBBiJBTIKCAIQABiABBiiBDIKCAMQABiABBiiBDIKCAQQABiABBiiBDIKCAUQABiABBiiBNIBCTI2NzdqMGoxNagCCLACAQ&sourceid=chrome&ie=UTF-8
+
+https://www.google.com/search?q=install+libusb+1.0&sca_esv=c7a01837b1eb8e0f&sxsrf=ADLYWIIGtCJwfLJpZvWfo832UL9JBZHnxg:1725436834371&lr=lang_ko&sa=X&ved=2ahUKEwi7_uCM6aiIAxUJh1YBHfjjISIQuAF6BAgIEAI&biw=2858&bih=1191&dpr=1.5
+
+
+https://studiodoc.tistory.com/60
+
+https://wlqmffl0102.github.io/
+
+
+stvd + cosmic + stm8
+https://gangsanilee.tistory.com/2391
+
+
+
+stmcubemx
+https://www.st.com/en/development-tools/stm8cubemx.html
+
+stmide : stvd-stm8
+https://www.st.com/en/development-tools/stvd-stm8.html
+
+LF will be replaced by CRLF the next time Git touches it
+git config --global core.autocrlf true
