@@ -22,7 +22,7 @@ STM8 개발을 위해 다음 도구들을 설치하고 환경 변수를 설정�
 ## 2. 레퍼런스 및 소스코드
 
 ### 📌 공식 소스코드 저장소
-* [GitHub - yooaroma/yoo_stm8s](https://github.com/yooaroma/yoo_stm8s)
+* [GitHub - yooaroma/yoo_stm8s](https://github.com/yooaroma/yoo_stm8s_sdcc)
 
 ### 📚 데이터시트 및 매뉴얼
 | 문서명 | 한국어/기타 | 영어 (ENG) |
