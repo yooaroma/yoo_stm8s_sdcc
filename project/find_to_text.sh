@@ -2,8 +2,8 @@
 
 # 수정 대상 문자열
 # 치환할 문자열 설정 (실제 값으로 변경하여 사용하세요)
-OLD_STR='stm8flash -c stlinkv2 -p stm8s103f3 -w $(OBJ_DIR)/$(PRJ).hex'
-NEW_STR='stm8flash -c stlinkv2 -p stm8s103f3 -w $(TOP_DIR)/project/bin/$(PRJ_DIR).hex'
+OLD_STR='/project/'
+NEW_STR='/'
 
 # 특수 문자 이스케이프 함수 (sed 예약어 처리)
 escape_sed() {

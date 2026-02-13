@@ -27,7 +27,7 @@
 /* Hardware define */
 /*
   // LEFT
-  PD4 : D13
+  PD4 : D13 : BEEP
   PD5 : D14 : A3 : TXD 
   PD6 : D15 : A4 : RXD
   RESET

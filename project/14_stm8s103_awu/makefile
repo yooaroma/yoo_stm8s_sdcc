@@ -20,7 +20,7 @@ CC = sdcc
 FLASH_SIZE = 8192
 
 #do not edit
-TOP_DIR = ./../..
+TOP_DIR = ./..
 OBJ_DIR = ./obj
 
 SRC = $(PRJ)_main.c
@@ -67,7 +67,7 @@ SRC += stm8s_mib_it.c
 # SRC += stm8s_mib_pcf8591.c
 SRC += stm8s_mib_vsprintf.c
 
-VPATH = $(TOP_DIR)/project/$(PRJ_DIR)/src
+VPATH = $(TOP_DIR)/$(PRJ_DIR)/src
 VPATH += $(TOP_DIR)/STM8S_Mib/src
 VPATH += $(TOP_DIR)/STM8S_StdPeriph_Driver/src
 
@@ -77,7 +77,7 @@ C_DEFINE += -DSTM8S103
 C_DEFINE += -D_$(PRJ)_
 C_DEFINE += -I$(TOP_DIR)/STM8S_Mib/inc
 C_DEFINE += -I$(TOP_DIR)/STM8S_StdPeriph_Driver/inc
-C_DEFINE += -I$(TOP_DIR)/project/$(PRJ_DIR)/src
+C_DEFINE += -I$(TOP_DIR)/$(PRJ_DIR)/src
 C_DEFINE += --debug
 C_DEFINE += --out-fmt-ihx
 C_DEFINE += --all-callee-saves
@@ -89,7 +89,7 @@ C_DEFINE += --opt-code-size
 all: $(OBJ_DIR) $(OBJS)
 	$(CC) -mstm8 $(OBJS) -o $(OBJ_DIR)/$(PRJ).ihx
 	packihx $(OBJ_DIR)/$(PRJ).ihx > $(OBJ_DIR)/$(PRJ).hex
-	cp $(OBJ_DIR)/$(PRJ).hex $(TOP_DIR)/project/bin/$(PRJ_DIR).hex
+	cp $(OBJ_DIR)/$(PRJ).hex $(TOP_DIR)/bin/$(PRJ_DIR).hex
 	./../check_size.sh
 #	makebin -s $(FLASH_SIZE) $(PRJ).ihx $(PRJ).bin
 
@@ -103,5 +103,5 @@ clean:
 	rm -f $(OBJ_DIR)/*.*
 
 flash: all
-	stm8flash -c stlinkv2 -p stm8s103f3 -w $(TOP_DIR)/project/bin/$(PRJ_DIR).hex
+	stm8flash -c stlinkv2 -p stm8s103f3 -w $(TOP_DIR)/bin/$(PRJ_DIR).hex
 

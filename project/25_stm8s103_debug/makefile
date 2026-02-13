@@ -13,8 +13,8 @@
 # https://yooaroma.com/mzip/stm8s_ref.pdf
 # https://yooaroma.com/mzip/stm8s_yoo.pdf
 
-PRJ_NUM = 17
-PRJ = stm8s103_wwdg
+PRJ_NUM = 25
+PRJ = stm8s103_debug
 PRJ_DIR = $(PRJ_NUM)_$(PRJ)
 CC = sdcc
 FLASH_SIZE = 8192

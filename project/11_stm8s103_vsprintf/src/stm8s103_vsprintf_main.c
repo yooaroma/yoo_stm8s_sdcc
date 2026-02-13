@@ -29,12 +29,12 @@
 /* Hardware define */
 /*
   // LEFT
-  PD4 : D13
+  PD4 : D13 : BEEP 
   PD5 : D14 : A3 : TXD
   PD6 : D15 : A4 : RXD
   RESET
-  PA1 : D0  : KEY1
-  PA2 : D1
+  PA1 : D0  : KEY1  
+  PA2 : D1  : LED1
   GND
   5V
   3.3V
