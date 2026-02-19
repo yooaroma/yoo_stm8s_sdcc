@@ -86,7 +86,7 @@ C_DEFINE += --opt-code-size
 
 
 
-all: $(OBJS)
+all: $(OBJ_DIR) $(OBJS)
 	$(CC) -mstm8 $(OBJS) -o $(OBJ_DIR)/$(PRJ).ihx
 	packihx $(OBJ_DIR)/$(PRJ).ihx > $(OBJ_DIR)/$(PRJ).hex
 	cp $(OBJ_DIR)/$(PRJ).hex $(TOP_DIR)/bin/$(PRJ_DIR).hex
