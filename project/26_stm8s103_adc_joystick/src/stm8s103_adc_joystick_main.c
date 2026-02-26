@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file stm8s103_adc_pwm_main.c
+ * @file stm8s103_adc_joystick_main.c 
  * @brief UART RX interrupt example.
  * @author yooaroma@gmail.com
  * @version V1.0.0
