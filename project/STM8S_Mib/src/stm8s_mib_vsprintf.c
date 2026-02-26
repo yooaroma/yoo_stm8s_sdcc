@@ -23,7 +23,7 @@ static char *format_num(char *str, uint32_t num, int base, int width, char pad, 
 {
     char buf[11];
     int i = 0;
-    char *hex_chars = upper ? "0123456789ABCDEF" : "0123456789abcdef";
+    const char *hex_chars = upper ? "0123456789ABCDEF" : "0123456789abcdef";
 
     // 숫자 추출
     if (num == 0)

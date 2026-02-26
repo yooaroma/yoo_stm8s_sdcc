@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file stm8s103_debug_main.c
+ * @file stm8s105_debug_main.c
  * @brief UART RX interrupt example.
  * @author yooaroma@gmail.com
  * @version V1.0.0
@@ -8,46 +8,87 @@
  ******************************************************************************
  */
 /*
+**STM8S105K4T6**는 STM8S 시리즈 중에서도 가장 대중적인 **Access line** 모델로, 특히 32핀 패키지 구성을 가지고 있어 소형 제어 보드에 자주 쓰입니다.
+모델명 뒤의 **K4T6**라는 접미사는 구체적인 하드웨어 구성을 의미합니다. 상세 제원을 정리해 드립니다.
+---
+
+### 1. 모델명(K4T6)의 의미 분석
+* **K**: 32핀 (32-pin) 패키지
+* **4**: 16KB Flash 메모리 용량
+* **T**: LQFP 패키지 타입
+* **6**: 동작 온도 범위 (-40°C ~ 85°C)
+
+### 2. 주요 하드웨어 제원 (Core & Memory)
+* **Core:** 16MHz STM8 (8-bit)
+* **Flash:** **16 KB** (프로그램 저장 공간)
+* **RAM:** **2 KB**
+* **Data EEPROM:** **1 KB** (내장되어 있어 설정값 저장 시 별도의 외부 칩이 필요 없음)
+* **동작 전압:** 2.95V ~ 5.5V (5V 시스템에서 안정적으로 동작 가능)
+
+### 3. 주변 장치 (Peripherals)
+* **I/O 핀:** 총 32핀 중 최대 **25개의 고속 I/O** 사용 가능.
+* **통신 포트:**
+* **UART:** 1개
+* **SPI:** 1개 (최대 8Mbit/s)
+* **I2C:** 1개 (최대 400kbit/s)
+
+* **타이머 (Timers):**
+* **TIM1:** 16비트 고급 제어 타이머 (3상 모터 제어 및 PWM 지원)
+* **TIM2:** 16비트 범용 타이머
+* **TIM4:** 8비트 기본 타이머
+
+* **ADC:** 10비트 해상도, **7개 채널** 지원.
+
+### 4. 물리적 특성
+* **패키지:** LQFP32 (7x7 mm)
+* **핀 피치:** 0.8 mm (납땜이 비교적 수월한 크기입니다)
+
+---
+
+### 💡 STM8S105K4T6 사용 시 팁
+1. **내장 클럭:** 외부 크리스탈 없이도 내부 16MHz HSI(High Speed Internal) 오실레이터를 사용할 수 있어 회로를 간소화할 수 있습니다.
+2. **프로그래밍:** **ST-LINK/V2** 디버거와 **SWIM** 인터페이스(1개 핀 사용)를 통해 아주 간편하게 소스 코드를 업로드하고 디버깅할 수 있습니다.
+3. **메모리 주의:** Flash가 16KB로 넉넉하지 않으므로, 복잡한 라이브러리(표준 라이브러리 등)를 과하게 사용하면 용량이 부족할 수 있습니다. 필요한 기능만 선별해서 구현하는 것이 좋습니다.
+
+혹시 이 칩을 이용해 회로를 설계 중이신가요? **전원 핀(VDD/VSS) 연결이나 디버깅 핀(SWIM) 구성**에 대해 궁금한 점이 있다면 더 자세히 설명해 드릴 수 있습니다.
+
+2	  PA1	(OscIn, no HS)	13	
+3	  PA2	(OscOut, no HS)	14	
+8	  PF4	Ain12 (not supported, no HS)	15	
+11	PB5	Ain5, [SDA], no HS	16	Analog A0
+12	PB4	Ain4, [SCL], no HS	17	Analog A1
+13	PB3	Ain3, no HS	18	Analog A2
+14	PB2	Ain2, no HS	19	Analog A3
+15	PB1	Ain1, no HS	20	Analog A4
+16	PB0	Ain0, no HS	21	Analog A5
+17	PE5	SPI_NSS, no HS	22	LED
+18	PC1	T1-1	23	PWM
+19	PC2	T1-2	24	PWM
+20	PC3	T1-3	0	PWM
+21	PC4	T1-4	1	PWM
+22	PC5	SCK	2	
+23	PC6	MOSI	3	
+24	PC7	MISO	4	
+25	PD0	T3-2	5	PWM
+26	PD1	SWIM	6	
+27	PD2	T3-1	7	PWM
+28	PD3	T2-2	8	PWM
+29	PD4	T2-1/Beep	9	PWM
+30	PD5	TX	10	
+31	PD6	RX	11	
+32	PD7	TLI	12	
+
+*/
+/*
   info :
     1. 터미널 창에서 key 입력 상태 표시
     2. led 상태 변경
-    3. beep 음 시작
-    4. beep 음 끝
 */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s.h"
 #include "stm8s_mib.h"
 #include "string.h"
-
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Hardware define */
-/*
-  // LEFT
-  PD4 : D13 : BEEP
-  PD5 : D14 : A3 : TXD
-  PD6 : D15 : A4 : RXD
-  RESET
-  PA1 : D0  : KEY1
-  PA2 : D1  : LED1
-  GND
-  5V
-  3.3V
-  PA3 : D2  : SS
-  // RIGHT
-  PD3 : D23 : A2
-  PD2 : D11 : A1
-  PD1 : D10 : SWIM
-  PC7 : D9  : MISO
-  PC6 : D8  : MOSI
-  PC5 : D7  : SCK
-  PC4 : D6  : A0
-  PC3 : D5
-  PB4 : D4  : SCA
-  PB5 : LED : SDA
-*/
-
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -122,7 +163,7 @@ void main(void)
     mib_printf(" ###################################\r\n");
   }
   {
-    mib_printf("\r\n STM8S103 DEBUG Test Program Start...\r\n");
+    mib_printf("\r\n STM8S105 DEBUG Test Program Start...\r\n");
     // I2C_Config();
   }
   {
@@ -145,6 +186,7 @@ void main(void)
       //   {
       //     vwSec = MibGetSecs();
       //     Toggle();
+      //     // mib_printf(" uart test...\r\n");
       //   }
       // }
       {
@@ -193,12 +235,14 @@ void main(void)
                   {
                     if (value_a == 0)
                     {
-                      UCOM_LED1_GPIO->ODR |= (uint8_t)UCOM_LED1_PIN;
+                      // UCOM_LED1_GPIO->ODR |= (uint8_t)UCOM_LED1_PIN;
+                      UCOM_LED1_GPIO->ODR &= ~(uint8_t)UCOM_LED1_PIN;
                       mib_printf(" led off..\r\n");
                     }
                     else
                     {
-                      UCOM_LED1_GPIO->ODR &= ~(uint8_t)UCOM_LED1_PIN;
+                      UCOM_LED1_GPIO->ODR |= (uint8_t)UCOM_LED1_PIN;
+                      // UCOM_LED1_GPIO->ODR &= ~(uint8_t)UCOM_LED1_PIN;
                       mib_printf(" led on..\r\n");
                     }
                   }
@@ -319,7 +363,7 @@ void GPIO_Configuration(void)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  ******************************************************************************
- * @brief Toggle PD0 (Led LD1)
+ * @brief Toggle PD7 (Led LD1)
  * @par Parameters:
  * None
  * @retval void None
@@ -386,25 +430,20 @@ void debug_info(void)
 {
   mib_printf(" ############################\r\n");
   mib_printf(" # <help> or <?>            #\r\n");
-  mib_printf(" # PD4 : BEEP : 1,2,4 KHz   #\r\n");
-  mib_printf(" # PA1 : KEY, PB5 : LED     #\r\n");
-  mib_printf(" # <beep> <start> [freq] HZ #\r\n");
-  mib_printf(" # <beep> <end>             #\r\n");
+  mib_printf(" # PA1 : KEY, PD7 : LED     #\r\n");
   mib_printf(" # <key> <rd>               #\r\n");
   mib_printf(" # <led> <wr> [data]        #\r\n");
+  mib_printf(" # PD4 : BEEP : 1,2,4 KHz   #\r\n");
+  mib_printf(" # <beep> <start> [freq] HZ #\r\n");
+  mib_printf(" # <beep> <end>             #\r\n");
   mib_printf(" ############################\r\n");
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -427,45 +466,58 @@ void debug_info(void)
 #define UCOM_BEEP_GPIO GPIOD     // PD4
 #define UCOM_BEEP_PIN GPIO_PIN_4 // PD4
 #define UCOM_BEEP_MODE GPIO_MODE_OUT_PP_LOW_FAST
+
 #define OPT2_REG 0x4803
 #define AFR7_BIT 0x80 // 1: Port D4 alternate function = BEEP // AFR7 Alternate function remapping option 7
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
+void flash_write_option_opt7(uint8_t mode) // mode 0: reset, 1: set
+{
+    uint16_t vwAddress = 0;
+    uint16_t vwData = 0;
+    vwAddress = OPT2_REG;
+    mib_printf("\r\n  Table 11. Option byte : OPT2 : AFR7 , BEEP");
+    {
+      vwData = mmFlashOptionRead(vwAddress);
+      mib_printf("\r\n 1. mmFlashOptionRead(0x%lx)=[0x%04lx]", (long)vwAddress, (long)vwData);
+    }
+    {
+      mmFlashOptionUnlock();               // unlock option byte
+      if(mode == 0)
+      {
+        mmFlashOptionWrite(vwAddress, 0x00); // AFR7 : BEEP, reset remap
+      }
+      else
+      {
+        mmFlashOptionWrite(vwAddress, AFR7_BIT); // AFR7 : BEEP, set remap
+      }
+      vwData = mmFlashOptionRead(vwAddress);
+      mib_printf("\r\n 2. mmFlashOptionRead(0x%lx)=[0x%04lx]", (long)vwAddress, (long)vwData);
+    }
+    mib_printf("\r\n"); // 마지막 줄바꿈
+}
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
 void fnBeepStart(uint16_t vwFreq) // msec...
 {
-  // static uint8_t gbBeepStartBit = 0;
-  // GPIO init
-  /* Configure PD4 (BEEPER) as output push-pull low */
-  // GPIO_Init(GPIOD, GPIO_PIN_4 , GPIO_MODE_OUT_PP_LOW_FAST);
-  // PD4 : BEEP
-  /* Configure PD4 (BEEP) as output push-pull low (led switched on) */
-  // GPIO_Init(UCOM_BEEP_GPIO, UCOM_BEEP_PIN, UCOM_BEEP_MODE);
-  //  if(gbBeepStartBit == 0)
-  {
-    // gbBeepStartBit = 1;
-    {
-      UCOM_BEEP_GPIO->DDR |= (UCOM_BEEP_PIN);  /* Set Output mode */
-      UCOM_BEEP_GPIO->CR1 |= (UCOM_BEEP_PIN);  /* Pull-Up or Push-Pull */
-      UCOM_BEEP_GPIO->CR2 |= (UCOM_BEEP_PIN);  /* Output speed up to 10 MHz */
-      UCOM_BEEP_GPIO->ODR &= ~(UCOM_BEEP_PIN); // low...
-    }
-#if defined(STM8S105)
-    {
-      // GPIO remap
-      /* set option bytes */
-      if (FLASH_ReadByte(OPT2_REG) != AFR7_BIT)
-      {
-        FLASH_Unlock(FLASH_MEMTYPE_DATA);
-        /* Enable by HW WWDG */
-        FLASH_ProgramOptionByte(OPT2_REG, AFR7_BIT);
-      }
-      // vbData=FLASH_ReadOptionByte(OPT2_REG);
-    }
-#endif
-  }
+  uint8_t vOptReg = 0;
   if (vwFreq != 0)  
   {
+    {
+      {
+        UCOM_BEEP_GPIO->DDR |= (UCOM_BEEP_PIN);  /* Set Output mode */
+        UCOM_BEEP_GPIO->CR1 |= (UCOM_BEEP_PIN);  /* Pull-Up or Push-Pull */
+        UCOM_BEEP_GPIO->CR2 |= (UCOM_BEEP_PIN);  /* Output speed up to 10 MHz */
+        UCOM_BEEP_GPIO->ODR &= ~(UCOM_BEEP_PIN); // low...
+      }
+  #if defined(STM8S105)
+      {
+        flash_write_option_opt7(1); // AFR7 : PD4 alternate function = BEEP, set remap
+      }
+  #endif
+    }
     {
       // set freq
       // mib_printf("beep start : [%d] Hz\r\n",(vwFreq));
@@ -561,4 +613,5 @@ void calConfigBEEP(uint16_t vwFreq) // msec...
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
+
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

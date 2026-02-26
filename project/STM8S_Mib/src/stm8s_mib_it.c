@@ -345,10 +345,12 @@ INTERRUPT_HANDLER(UART1_TX_IRQHandler, 17)
    /* In order to detect unexpected events during development,
       it is recommended to set a breakpoint on the following instruction.
    */
-     #if defined(UART_IRQ_TX_USE)
-   extern void UART_TX_IRQHandler(void); /* UART RX */
-   UART_TX_IRQHandler();
-   #endif
+   #if defined(STM8S103)
+      #if defined(UART_IRQ_TX_USE)
+      extern void UART_TX_IRQHandler(void); /* UART RX */
+      UART_TX_IRQHandler();
+      #endif
+   #endif /* STM8S103 */
 }
 
 /**
@@ -361,10 +363,12 @@ INTERRUPT_HANDLER(UART1_RX_IRQHandler, 18)
    /* In order to detect unexpected events during development,
       it is recommended to set a breakpoint on the following instruction.
    */
-   #if defined(UART_IRQ_RX_USE)
-   extern void UART_RX_IRQHandler(void); /* UART RX */
-   UART_RX_IRQHandler();
-   #endif
+   #if defined(STM8S103)
+      #if defined(UART_IRQ_RX_USE)
+      extern void UART_RX_IRQHandler(void); /* UART RX */
+      UART_RX_IRQHandler();
+      #endif
+   #endif /* STM8S103 */
 }
 #endif /* (STM8S208) || (STM8S207) || (STM8S103) || (STM8S001) || (STM8S903) || (STM8AF62Ax) || (STM8AF52Ax) */
 
@@ -416,7 +420,13 @@ INTERRUPT_HANDLER(UART2_TX_IRQHandler, 20)
 {
    /* In order to detect unexpected events during development,
       it is recommended to set a breakpoint on the following instruction.
-   */
+   */   
+   #if defined(STM8S105)
+      #if defined(UART_IRQ_TX_USE)
+      extern void UART_TX_IRQHandler(void); /* UART RX */
+      UART_TX_IRQHandler();
+      #endif
+   #endif /* STM8S105 */
 }
 
 /**
@@ -429,6 +439,12 @@ INTERRUPT_HANDLER(UART2_RX_IRQHandler, 21)
    /* In order to detect unexpected events during development,
       it is recommended to set a breakpoint on the following instruction.
    */
+   #if defined(STM8S105)
+      #if defined(UART_IRQ_RX_USE)
+      extern void UART_RX_IRQHandler(void); /* UART RX */
+      UART_RX_IRQHandler();
+      #endif
+   #endif /* STM8S105 */
 }
 #endif /* (STM8S105) || (STM8AF626x) */
 
