@@ -2,7 +2,6 @@
 SUBDIRS := 01_stm8s103_void
 
 # 2. 추가 디렉토리들을 += 로 연결
-SUBDIRS += 01_stm8s103_void
 SUBDIRS += 02_stm8s103_led_blink
 SUBDIRS += 03_stm8s103_led_key
 SUBDIRS += 04_stm8s103_led_key_irq
@@ -45,6 +44,7 @@ $(SUBDIRS):
 
 # clean 타겟
 clean:
+	rm -f ./mbin/*.hex
 	@for dir in $(SUBDIRS); do \
 		$(MAKE) -C $$dir clean; \
 	done

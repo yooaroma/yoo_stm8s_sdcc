@@ -2,8 +2,8 @@
 
 # 수정 대상 문자열
 # 치환할 문자열 설정 (실제 값으로 변경하여 사용하세요)
-OLD_STR='/project/'
-NEW_STR='/'
+OLD_STR='/bin/'
+NEW_STR='/mbin/'
 
 # 특수 문자 이스케이프 함수 (sed 예약어 처리)
 escape_sed() {

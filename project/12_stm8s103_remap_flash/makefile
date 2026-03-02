@@ -89,7 +89,7 @@ C_DEFINE += --opt-code-size
 all: $(OBJ_DIR) $(OBJS)
 	$(CC) -mstm8 $(OBJS) -o $(OBJ_DIR)/$(PRJ).ihx
 	packihx $(OBJ_DIR)/$(PRJ).ihx > $(OBJ_DIR)/$(PRJ).hex
-	cp $(OBJ_DIR)/$(PRJ).hex $(TOP_DIR)/bin/$(PRJ_DIR).hex
+	cp $(OBJ_DIR)/$(PRJ).hex $(TOP_DIR)/mbin/$(PRJ_DIR).hex
 	./../check_size.sh
 #	makebin -s $(FLASH_SIZE) $(PRJ).ihx $(PRJ).bin
 
@@ -103,5 +103,5 @@ clean:
 	rm -f $(OBJ_DIR)/*.*
 
 flash: all
-	stm8flash -c stlinkv2 -p stm8s103f3 -w $(TOP_DIR)/bin/$(PRJ_DIR).hex
+	stm8flash -c stlinkv2 -p stm8s103f3 -w $(TOP_DIR)/mbin/$(PRJ_DIR).hex
 
