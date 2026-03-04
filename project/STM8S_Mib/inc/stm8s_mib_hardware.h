@@ -98,9 +98,15 @@
 31	PD6	RX	11	
 32	PD7	TLI	12	
 */
+#if defined(_stm8s105c6_debug_) 
+#define UCOM_LED1_GPIO    GPIOD        // PD0
+#define UCOM_LED1_PIN     GPIO_PIN_0   // PD0
+#define UCOM_LED1_MODE    GPIO_MODE_OUT_PP_LOW_FAST
+#else
 #define UCOM_LED1_GPIO    GPIOD        // PD7
 #define UCOM_LED1_PIN     GPIO_PIN_7   // PD7
 #define UCOM_LED1_MODE    GPIO_MODE_OUT_PP_LOW_FAST
+#endif 
 
 #define UCOM_KEY1_GPIO    GPIOA        // PA1
 #define UCOM_KEY1_PIN     GPIO_PIN_1   // PA1

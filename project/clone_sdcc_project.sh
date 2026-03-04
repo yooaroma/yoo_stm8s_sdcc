@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # 1. 사용자 입력 (디렉토리명 설정)
-SRC_DIR="25_stm8s103_debug"
-DST_DIR="27_stm8s105_debug"
+SRC_DIR="27_stm8s105_debug"
+DST_DIR="29_stm8s105c6_debug"
 
 # 2. 프로젝트 이름 자동 추출 (앞의 '숫자_' 제거)
 OLD_NAME="${SRC_DIR#*_}"
